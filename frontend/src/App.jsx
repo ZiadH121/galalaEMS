@@ -1,4 +1,7 @@
 import { Routes, Route, Link } from "react-router-dom";
+import Login from "./pages/Login";
+import Events from "./pages/Events";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
@@ -10,9 +13,9 @@ function App() {
       </nav>
 
       <Routes>
-        <Route path="/login" element={<h2>Login Page</h2>} />
-        <Route path="/events" element={<h2>Events Page</h2>} />
-        <Route path="/dashboard" element={<h2>Admin Dashboard</h2>} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/events" element={<Events />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="*" element={<h2>404 Not Found</h2>} />
       </Routes>
     </div>
