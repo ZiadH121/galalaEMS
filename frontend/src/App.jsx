@@ -1,15 +1,30 @@
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Events from "./pages/Events";
 import Dashboard from "./pages/Dashboard";
 
 function App() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
+
   return (
     <div>
       <nav>
-        <Link to="/login">Login</Link> |{" "}
         <Link to="/events">Events</Link> |{" "}
-        <Link to="/dashboard">Dashboard</Link>
+        <Link to="/dashboard">Dashboard</Link> |{" "}
+        {!user ? (
+          <Link to="/login">Login</Link>
+        ) : (
+          <>
+            <span>Welcome, {user.name}</span>
+            <button onClick={handleLogout}>Logout</button>
+          </>
+        )}
       </nav>
 
       <Routes>
