@@ -1,6 +1,7 @@
 import { useState } from "react";
 import API from "../api/api";
 import { useNavigate } from "react-router-dom";
+import { Form, Button, Card, Alert } from "react-bootstrap";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -14,9 +15,7 @@ function Login() {
 
     try {
       const { data } = await API.post("/users/login", { email, password });
-
       localStorage.setItem("user", JSON.stringify(data));
-
       navigate("/events");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
@@ -24,34 +23,39 @@ function Login() {
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+    <Card className="mx-auto" style={{ maxWidth: "400px" }}>
+      <Card.Body>
+        <h2 className="text-center mb-4">Login</h2>
+        {error && <Alert variant="danger">{error}</Alert>}
+        <Form onSubmit={handleSubmit}>
+          <Form.Group className="mb-3" controlId="formEmail">
+            <Form.Label>Email</Form.Label>
+            <Form.Control 
+              type="email" 
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+              placeholder="Enter email"
+              required 
+            />
+          </Form.Group>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email:</label>
-          <input 
-            type="email" 
-            value={email} 
-            onChange={(e) => setEmail(e.target.value)} 
-            required 
-          />
-        </div>
+          <Form.Group className="mb-3" controlId="formPassword">
+            <Form.Label>Password</Form.Label>
+            <Form.Control 
+              type="password" 
+              value={password} 
+              onChange={(e) => setPassword(e.target.value)} 
+              placeholder="Enter password"
+              required 
+            />
+          </Form.Group>
 
-        <div>
-          <label>Password:</label>
-          <input 
-            type="password" 
-            value={password} 
-            onChange={(e) => setPassword(e.target.value)} 
-            required 
-          />
-        </div>
-
-        <button type="submit">Login</button>
-      </form>
-    </div>
+          <Button type="submit" className="w-100" variant="primary">
+            Login
+          </Button>
+        </Form>
+      </Card.Body>
+    </Card>
   );
 }
 

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import API from "../api/api";
+import { Card, Button, Spinner, Row, Col } from "react-bootstrap";
 
 function Events() {
   const [events, setEvents] = useState([]);
@@ -20,21 +21,35 @@ function Events() {
     fetchEvents();
   }, []);
 
-  if (loading) return <p>Loading events...</p>;
+  if (loading) {
+    return <Spinner animation="border" className="d-block mx-auto mt-5" />;
+  }
 
   return (
     <div>
-      <h2>Approved Events</h2>
+      <h2 className="mb-4">Approved Events</h2>
       {events.length === 0 ? (
         <p>No events found.</p>
       ) : (
-        <ul>
+        <Row xs={1} md={2} lg={3} className="g-4">
           {events.map((event) => (
-            <li key={event._id}>
-              <strong>{event.title}</strong> – {event.date} @ {event.location}
-            </li>
+            <Col key={event._id}>
+              <Card>
+                <Card.Body>
+                  <Card.Title>{event.title}</Card.Title>
+                  <Card.Subtitle className="mb-2 text-muted">
+                    {new Date(event.date).toLocaleDateString()} @ {event.location}
+                  </Card.Subtitle>
+                  <Card.Text>{event.description}</Card.Text>
+                  <Card.Text>
+                    <strong>Capacity:</strong> {event.capacity}
+                  </Card.Text>
+                  <Button variant="primary">Register</Button>
+                </Card.Body>
+              </Card>
+            </Col>
           ))}
-        </ul>
+        </Row>
       )}
     </div>
   );
