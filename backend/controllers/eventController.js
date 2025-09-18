@@ -72,4 +72,53 @@ const getEvents = async (req, res) => {
   }
 };
 
-module.exports = { proposeEvent, reviewEvent, getEvents };
+// @desc   Register student for event
+// @route  POST /api/events/:id/register
+// @access Student
+const registerForEvent = async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id);
+
+    if (!event) return res.status(404).json({ message: "Event not found" });
+    if (event.status !== "approved") return res.status(400).json({ message: "Event not open for registration" });
+
+    // Check capacity
+    if (event.capacity > 0 && event.registrations.length >= event.capacity) {
+      return res.status(400).json({ message: "Event is full" });
+    }
+
+    // Prevent duplicate registration
+    if (event.registrations.includes(req.user._id)) {
+      return res.status(400).json({ message: "Already registered" });
+    }
+
+    event.registrations.push(req.user._id);
+    await event.save();
+
+    res.json({ message: "Registration successful", event });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc   Get registrations for an event
+// @route  GET /api/events/:id/registrations
+// @access Organizer/Admin
+const getRegistrations = async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id).populate("registrations", "name email");
+
+    if (!event) return res.status(404).json({ message: "Event not found" });
+
+    // Only creator or admin can see registrations
+    if (req.user.role !== "admin" && event.createdBy.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+
+    res.json({ registrations: event.registrations });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { proposeEvent, reviewEvent, getEvents, registerForEvent, getRegistrations };
