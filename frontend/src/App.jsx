@@ -1,15 +1,18 @@
 import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import { Navbar, Nav, Container, Button } from "react-bootstrap";
-import Login from "./pages/Login";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
 import Events from "./pages/Events";
 import Dashboard from "./pages/Dashboard";
+import PrivateRoute from "./components/PrivateRoute";
 
-function App() {
-  const user = JSON.parse(localStorage.getItem("user"));
+function AppContent() {
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
+    logout();
     navigate("/login");
   };
 
@@ -27,7 +30,10 @@ function App() {
             </Nav>
             <Nav>
               {!user ? (
-                <Nav.Link as={Link} to="/login">Login</Nav.Link>
+                <>
+                  <Nav.Link as={Link} to="/login">Login</Nav.Link>
+                  <Nav.Link as={Link} to="/register">Register</Nav.Link>
+                </>
               ) : (
                 <>
                   <Navbar.Text className="me-3">
@@ -46,9 +52,18 @@ function App() {
       {/* Main content */}
       <Container className="my-4">
         <Routes>
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
           <Route path="/events" element={<Events />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/" element={<h2>Welcome to GU EMS</h2>} />
           <Route path="*" element={<h2>404 Not Found</h2>} />
         </Routes>
       </Container>
@@ -58,6 +73,14 @@ function App() {
         <p className="mb-0">© 2025 Galala University EMS</p>
       </footer>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 
