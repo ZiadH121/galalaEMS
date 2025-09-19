@@ -25,5 +25,10 @@ app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
+app.get("/ping", (req, res) => {
+  console.log(`[UptimeRobot] Ping received at ${new Date().toISOString()}`);
+  res.status(200).send("OK");
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
