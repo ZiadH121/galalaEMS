@@ -1,7 +1,6 @@
 import { Table, Button } from "react-bootstrap";
 
 function Dashboard() {
-  // For MVP, we’ll just show placeholder events for now
   const pendingEvents = [
     { id: 1, title: "Club Fair", date: "2025-10-01", location: "Main Hall" },
     { id: 2, title: "Movie Night", date: "2025-10-05", location: "Auditorium" },
