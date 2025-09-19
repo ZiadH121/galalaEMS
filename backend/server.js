@@ -25,6 +25,7 @@ app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
+// Backend ping route for UptimeRobot pings to keep backend alive, remove this when system has a dedicated backend hosting.
 app.get("/ping", (req, res) => {
   console.log(`[UptimeRobot] Ping received at ${new Date().toISOString()}`);
   res.status(200).send("OK");
